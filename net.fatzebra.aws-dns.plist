@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+        <key>Label</key>
+        <string>net.fatzebra.aws-dns</string>
+        <key>Program</key>
+        <string>/Users/broc/bin/aws-dns</string>
+        <key>KeepAlive</key>
+        <true/>
+        <key>RunAtLoad</key>
+        <true/>
+        <key>StandardErrorPath</key>
+        <string>/tmp/aws-dns.log</string>
+        <key>StandardOutPath</key>
+        <string>/tmp/aws-dns.log</string>
+</dict>
+</plist>
