@@ -31,6 +31,6 @@ make uninstall
 
 Errata
 ------
-I cannot guarantee this will work, but all operations performed are read only so rest assured this app won't go and reboot or destroy your EC2 instances. If you are concerned about this you can setup an IAM role which only has read access to the EC2 data and set this up in your credentials file.
+I cannot guarantee this will work on your system (it works for me!), but all operations performed are read only so rest assured this app won't go and reboot or destroy your EC2 instances. If you are concerned about this you can setup an IAM role which only has read access to the EC2 data and set this up in your credentials file.
 
 Improvements welcome :)
