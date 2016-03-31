@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
         <key>Label</key>
-        <string>net.fatzebra.aws-dns</string>
+        <string>net.amasses.aws-dns</string>
         <key>Program</key>
         <string>/Users/broc/bin/aws-dns</string>
         <key>KeepAlive</key>
