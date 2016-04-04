@@ -22,3 +22,6 @@ uninstall:
 	sudo rm -rf /etc/resolver/aws
 	sudo rm -rf /usr/local/bin/aws-dns
 	@echo "**** Uninstall complete"
+
+clean:
+	rm -rf aws-dns
