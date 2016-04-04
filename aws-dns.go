@@ -6,6 +6,7 @@ import (
 	"net"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"sync"
 	"time"
@@ -20,7 +21,7 @@ import (
 
 var addresses = make(map[string]string)
 
-const DNSSuffix string = "aws."
+const dnsSuffix string = "aws."
 
 var awsRegion = flag.String("region", "ap-southeast-2", "AWS region for API access")
 var port = flag.Int("port", 10053, "UDP Port to listen for DNS requests on")
@@ -31,7 +32,7 @@ func main() {
 	go updateAddresses()
 
 	server, addr, _, _ := setupServer()
-	dns.HandleFunc(DNSSuffix, AwsDNSServer)
+	dns.HandleFunc(dnsSuffix, awsDNSServer)
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
 	defer server.Shutdown()
@@ -74,7 +75,7 @@ func setupServer() (*dns.Server, string, chan struct{}, error) {
 	return server, pc.LocalAddr().String(), fin, nil
 }
 
-func AwsDNSServer(w dns.ResponseWriter, req *dns.Msg) {
+func awsDNSServer(w dns.ResponseWriter, req *dns.Msg) {
 	m := new(dns.Msg)
 	m.SetReply(req)
 
@@ -108,19 +109,26 @@ func populateAddresses() {
 
 		// resp has all of the response data, pull out instance IDs:
 		fmt.Println("> Number of instances: ", len(resp.Reservations))
-		for idx, _ := range resp.Reservations {
+		for idx := range resp.Reservations {
 			for _, inst := range resp.Reservations[idx].Instances {
 				name := getNameTagVal(inst.Tags)
-				if len(name) == 0 {
-					fmt.Printf("No 'Name' tag assigned to instance %s, using ID instead\n", *inst.InstanceId)
-					name = *inst.InstanceId
-				}
-				record := strings.ToLower(fmt.Sprintf("%s.%s", getNameTagVal(inst.Tags), DNSSuffix))
+				record := strings.ToLower(fmt.Sprintf("%s.%s", *inst.InstanceId, dnsSuffix))
 				addresses[record] = *inst.PrivateIpAddress
 				fmt.Printf("Added address %s: %s\n", record, *inst.PrivateIpAddress)
+				if len(name) != 0 {
+					record := strings.ToLower(fmt.Sprintf("%s.%s", parameterizeString(name), dnsSuffix))
+					addresses[record] = *inst.PrivateIpAddress
+					fmt.Printf("Added address %s: %s\n", record, *inst.PrivateIpAddress)
+				}
 			}
 		}
 	}
+}
+
+func parameterizeString(input string) string {
+	input = strings.ToLower(input)
+	re := regexp.MustCompile("[^a-z0-9-_.]+")
+	return re.ReplaceAllString(input, "-")
 }
 
 func getAvailableAwsProfiles() []string {
