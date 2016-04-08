@@ -82,6 +82,14 @@ func awsDNSServer(w dns.ResponseWriter, req *dns.Msg) {
 	record := strings.ToLower(req.Question[0].Name)
 	fmt.Println("DNS Request: ", record)
 
+	if record == "reload-me.aws." {
+		go populateAddresses()
+
+		m.Extra = make([]dns.RR, 1)
+		m.Extra[0] = &dns.TXT{Hdr: dns.RR_Header{Name: m.Question[0].Name, Rrtype: dns.TypeTXT, Class: dns.ClassNONE, Ttl: 0}, Txt: []string{"Reloaded OK"}}
+		w.WriteMsg(m)
+	}
+
 	// Lookup the address
 	if len(addresses[record]) > 0 {
 		m.Extra = make([]dns.RR, 1)
