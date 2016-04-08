@@ -29,6 +29,15 @@ To remove run:
 make uninstall
 ```
 
+Reloading
+---------
+
+It is possible to trigger a reload by querying `reload-me.aws`. This can be done with a ping (`ping reload-me.aws`) or a dig query:
+
+```
+dig reload-me.aws @127.0.0.1 -p 10053
+```
+
 Errata
 ------
 I cannot guarantee this will work on your system (it works for me!), but all operations performed are read only so rest assured this app won't go and reboot or destroy your EC2 instances. If you are concerned about this you can setup an IAM role which only has read access to the EC2 data and set this up in your credentials file.
